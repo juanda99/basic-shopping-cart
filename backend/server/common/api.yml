@@ -2,7 +2,7 @@ openapi: 3.0.1
 info:
   title: cart-api
   description: Cart API
-  version: 1.0.0
+  version: 1.1.0
 servers:
 - url: /api/v1
 tags:
@@ -53,6 +53,25 @@ paths:
         404:
           description: Product not found
           content: {}
+  /carts:
+    post:
+      tags:
+      - Carts
+      description: Create a new cart
+      requestBody:
+        description: The schema of a new products order
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderBody'
+        required: true
+      responses:
+        200:
+          description: Returns cart 
+          content: {}
+        400:
+          description: Bad request, for ex. no orders field or product id not found 
+          content: {}
   /spec:
     get:
       tags:
@@ -80,3 +99,25 @@ components:
         cost:
           type: number
           example: 1099
+    OrderBody:
+      title: Order
+      required:
+      - orders
+      type: object
+      properties:
+        name:
+          type: array
+          items: 
+            $ref: "#/components/schemas/Order"
+    Order:
+      type: object
+      title: Order  item  
+      required:
+      - id
+      - quantity
+      properties:
+        id:
+          type: number
+        quantity:
+          type: number
+

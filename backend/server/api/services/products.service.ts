@@ -1,14 +1,14 @@
 import L from '../../common/logger';
 
 let id = 1;
-interface Product {
+export interface Product {
   id: number;
   name: string;
   customerPrice: number;
   cost: number;
 }
 
-const products: Product[] = [
+export const products: Product[] = [
   { id: id++, name: 'Soup', customerPrice: 199, cost: 186 },
   { id: id++, name: 'Bread', customerPrice: 87, cost: 21 },
   { id: id++, name: 'Cheese', customerPrice: 275, cost: 234 },
