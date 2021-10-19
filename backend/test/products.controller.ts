@@ -39,7 +39,7 @@ describe('Products', () => {
       .get('/api/v1/products/5')
       .expect('Content-Type', /json/)
       .then(r => {
-        console.log(r.body);
+        // console.log(r.body);
         expect(r.body)
           .to.be.an('object')
           .that.has.property('name')

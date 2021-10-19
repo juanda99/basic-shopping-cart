@@ -17,7 +17,7 @@ const products: Product[] = [
 
 export class ProductsService {
   all(): Promise<Product[]> {
-    L.info(products, 'fetch all products');
+    L.info('fetch all products');
     return Promise.resolve(products);
   }
 

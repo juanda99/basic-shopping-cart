@@ -10,7 +10,7 @@
     "dev:debug": "nodemon --exec \"node -r ts-node/register --inspect-brk\" server/index.ts | pino-pretty",
     "lint": "eslint -c .eslintrc.js \"{server, test}/**/*.{js,ts,tsx}\"",
     "lint:fix": "eslint -c .eslintrc.js \"{server, test}/**/*.{js,ts,tsx}\" --fix",
-    "test": "mocha test/**/*.ts --exit",
+    "test": "mocha test/**/*.ts --exit | pino-pretty  |grep -v 'INFO'",
     "test:debug": "mocha --inspect-brk test/**/*.ts --exit"
   },
   "dependencies": {
