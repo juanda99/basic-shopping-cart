@@ -3,6 +3,7 @@ import path from 'path';
 import bodyParser from 'body-parser';
 import http from 'http';
 import os from 'os';
+import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import l from './logger';
 
@@ -23,6 +24,7 @@ export default class ExpressServer {
         limit: process.env.REQUEST_LIMIT || '100kb',
       })
     );
+    app.use(cors());
     app.use(bodyParser.text({ limit: process.env.REQUEST_LIMIT || '100kb' }));
     app.use(cookieParser(process.env.SESSION_SECRET));
     app.use(express.static(`${root}/public`));
