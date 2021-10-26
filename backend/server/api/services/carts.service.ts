@@ -1,5 +1,8 @@
 import L from '../../common/logger';
 import {products, Product} from './products.service'
+import { formatter, currencyToNumber } from './utils';
+import  {discounts}  from './discounts'
+
 
 export interface ProductOrder {
   productId: number;
@@ -15,24 +18,16 @@ interface CartItem {
   name: string,
   quantity: number,
   price: string,
-  totalPrice: string
+  totalPrice: string,
+  offers: string[],
+  totalPriceDisc:  string
 }
 
-interface Cart {
+export interface Cart {
   items: CartItem [],
-  grandTotal: string
+  grandTotal: string,
+  grandTotalDisc: string
 }
-
-export const carts: Cart[] = [
-  { 
-    items: [
-      { name: 'Soup', quantity: 2, price: '$199.00', totalPrice: '$398.00' },
-      { name: 'Cheese', quantity: 1, price: '$275.00', totalPrice: '$275.00' }
-    ],
-    grandTotal: '$673.00'
-   },
-];
-
 
 export class CartsService {
 
@@ -48,17 +43,12 @@ export class CartsService {
   as the requirement is USD and for the sake of brevety we will use a fix currencyToNumbber function
 */
 
-const formatter = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-});
-
-const currencyToNumber =  (currency: string): number => Number(currency.replace(/[^0-9\.-]+/g,""));
-
 const generateCart = (orders:  ProductOrder []): Cart =>  {
-  const cart:Cart =  {items: [], grandTotal: '$0.00'};
+  const cart:Cart =  {items: [], grandTotal: '$0.00', grandTotalDisc: '$0.00'};
   cart.items = orders.map(order => generateCartItem(order));
-  cart.grandTotal = generateGrandTotal(cart.items);
+  cart.grandTotal = generateTotal(cart.items, 'totalPrice');
+  const cartWithDiscounts = applyDiscounts(cart)
+  cartWithDiscounts.grandTotalDisc = generateTotal(cart.items, 'totalPriceDisc');
   return cart
 }
 
@@ -76,14 +66,18 @@ const  generateCartItem = (order: ProductOrder):CartItem => {
     name,
     quantity,
     price: formatter.format(customerPrice),
-    totalPrice: formatter.format(customerPrice * quantity)
+    totalPrice: formatter.format(customerPrice * quantity),
+    offers: [],
+    totalPriceDisc: formatter.format(customerPrice * quantity)
   };
 };
 
-const generateGrandTotal = (items: CartItem []):string => {
-  const totalPrice =  items.reduce((total, item) => total + currencyToNumber(item.totalPrice),  0);
+
+const applyDiscounts = (cart:Cart):Cart => discounts.reduce((cartWithDiscounts,discF)=>discF(cartWithDiscounts), cart)
+
+const generateTotal = (items: CartItem [], field: string):string => {
+  const totalPrice =  items.reduce((total, item) => total + currencyToNumber(item[field]),  0);
   return  formatter.format(totalPrice);
 };
 
 export default new CartsService();
-
